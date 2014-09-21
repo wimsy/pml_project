@@ -82,41 +82,10 @@ testing &lt;- train[-inTrain, ]</code></pre>
 <pre class="r"><code># Fix up classes in the training set
 training$classe &lt;- as.factor(training$classe)
 
-training$kurtosis_roll_belt &lt;- as.numeric(training$kurtosis_roll_belt)</code></pre>
-<pre><code>## Warning: NAs introduced by coercion</code></pre>
-<pre class="r"><code>training$kurtosis_picth_belt &lt;- as.numeric(training$kurtosis_picth_belt)</code></pre>
-<pre><code>## Warning: NAs introduced by coercion</code></pre>
-<pre class="r"><code>training$kurtosis_yaw_belt &lt;- as.numeric(training$kurtosis_yaw_belt)</code></pre>
-<pre><code>## Warning: NAs introduced by coercion</code></pre>
+training$kurtosis_roll_belt &lt;- as.numeric(training$kurtosis_roll_belt)
+training$kurtosis_picth_belt &lt;- as.numeric(training$kurtosis_picth_belt)
+training$kurtosis_yaw_belt &lt;- as.numeric(training$kurtosis_yaw_belt)</code></pre>
 <p><em>I’ve snipped about 30 moe lines like this for your convenience.</em></p>
-<pre><code>## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion
-## Warning: NAs introduced by coercion</code></pre>
 <pre class="r"><code>training &lt;- subset(training, select = colSums(is.na(training)) &lt; 13000)
 training &lt;- subset(training, select = -c(1:6))</code></pre>
 </div>

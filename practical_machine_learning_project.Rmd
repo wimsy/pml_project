@@ -36,7 +36,7 @@ training$kurtosis_yaw_belt <- as.numeric(training$kurtosis_yaw_belt)
 
 *I've snipped about 30 moe lines like this for your convenience.*
 
-```{r echo=FALSE warning=FALSE}
+```{r echo=FALSE, warning=FALSE}
 training$skewness_roll_belt <- as.numeric(training$skewness_roll_belt)
 training$skewness_roll_belt.1 <- as.numeric(training$skewness_roll_belt.1)
 training$skewness_yaw_belt <- as.numeric(training$skewness_yaw_belt)
