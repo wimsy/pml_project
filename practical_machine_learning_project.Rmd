@@ -1,0 +1,97 @@
+---
+title: "Practical Machine Learning Project"
+author: "Mike Wimsatt"
+date: "September 10, 2014"
+output: html_document
+---
+
+## Load and look at the data
+
+Here I decided to train on 70% of the data and hold out the other 30% for testing to predict error rates for out of sample data sets. 
+
+```{r}
+library(caret)
+library(randomForest)
+set.seed(16803)
+train <- read.csv('data//pml-training.csv', stringsAsFactors=F)
+inTrain <- createDataPartition(y=train$classe, p=0.7, list=FALSE)
+training <- train[inTrain, ]
+testing <- train[-inTrain, ]
+```
+
+## Data cleaning
+
+Because a lot of this data imported as characters, I converted them to numeric. Then I discovered that approximatey 100 of the variables are almost entirely missing values. i chose to eliminate those variables from the start. What follows is a not-very-elegant approach to accomplishign this. 
+
+I also eliminated variables identifying users and timestamps.
+
+```{r warning=FALSE}
+# Fix up classes in the training set
+training$classe <- as.factor(training$classe)
+
+training$kurtosis_roll_belt <- as.numeric(training$kurtosis_roll_belt)
+training$kurtosis_picth_belt <- as.numeric(training$kurtosis_picth_belt)
+training$kurtosis_yaw_belt <- as.numeric(training$kurtosis_yaw_belt)
+```
+
+*I've snipped about 30 moe lines like this for your convenience.*
+
+```{r echo=FALSE warning=FALSE}
+training$skewness_roll_belt <- as.numeric(training$skewness_roll_belt)
+training$skewness_roll_belt.1 <- as.numeric(training$skewness_roll_belt.1)
+training$skewness_yaw_belt <- as.numeric(training$skewness_yaw_belt)
+training$max_yaw_belt <- as.numeric(training$max_yaw_belt)
+training$min_yaw_belt <- as.numeric(training$min_yaw_belt)
+training$amplitude_yaw_belt <- as.numeric(training$amplitude_yaw_belt)
+
+training$kurtosis_roll_arm <- as.numeric(training$kurtosis_roll_arm)
+training$kurtosis_picth_arm <- as.numeric(training$kurtosis_picth_arm)
+training$kurtosis_yaw_arm <- as.numeric(training$kurtosis_yaw_arm)
+training$skewness_roll_arm <- as.numeric(training$skewness_roll_arm)
+training$skewness_pitch_arm <- as.numeric(training$skewness_pitch_arm)
+training$skewness_yaw_arm <- as.numeric(training$skewness_yaw_arm)
+
+training$kurtosis_roll_dumbbell <- as.numeric(training$kurtosis_roll_dumbbell)
+training$kurtosis_picth_dumbbell <- as.numeric(training$kurtosis_picth_dumbbell)
+training$kurtosis_yaw_dumbbell <- as.numeric(training$kurtosis_yaw_dumbbell)
+training$skewness_roll_dumbbell <- as.numeric(training$skewness_roll_dumbbell)
+training$skewness_pitch_dumbbell <- as.numeric(training$skewness_pitch_dumbbell)
+training$skewness_yaw_dumbbell <- as.numeric(training$skewness_yaw_dumbbell)
+training$max_yaw_dumbbell <- as.numeric(training$max_yaw_dumbbell)
+training$min_yaw_dumbbell <- as.numeric(training$min_yaw_dumbbell)
+training$amplitude_yaw_dumbbell <- as.numeric(training$amplitude_yaw_dumbbell)
+
+training$kurtosis_roll_forearm <- as.numeric(training$kurtosis_roll_forearm)
+training$kurtosis_picth_forearm <- as.numeric(training$kurtosis_picth_forearm)
+training$kurtosis_yaw_forearm <- as.numeric(training$kurtosis_yaw_forearm)
+training$skewness_roll_forearm <- as.numeric(training$skewness_roll_forearm)
+training$skewness_pitch_forearm <- as.numeric(training$skewness_pitch_forearm)
+training$skewness_yaw_forearm <- as.numeric(training$skewness_yaw_forearm)
+training$max_yaw_forearm <- as.numeric(training$max_yaw_forearm)
+training$min_yaw_forearm <- as.numeric(training$min_yaw_forearm)
+training$amplitude_yaw_forearm <- as.numeric(training$amplitude_yaw_forearm)
+```
+
+```{r }
+training <- subset(training, select = colSums(is.na(training)) < 13000)
+training <- subset(training, select = -c(1:6))
+```
+
+## Fitting the model
+
+I chose to train a straightforward random forest model to predict `classe`. It uses the default 500 trees. I used the base `randomForest` because the `caret`-wrapped version was taking a long time to run. 
+
+```{r}
+modelFit <- randomForest(training$classe ~ ., 
+                         data=training)
+modelFit
+```
+
+## Predicting out of sample error rate 
+
+I applied the model to the set of data I held out for testing at the outset, and this gave me what I expect is a decent estimate of the out of sample error rate. From the table below it seems like I can expect an error rate of about 0.4% (accuracy of 99.6%).
+
+```{r}
+confusionMatrix(testing$classe, predict(modelFit, testing))
+```
+
